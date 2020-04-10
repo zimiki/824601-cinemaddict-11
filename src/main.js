@@ -1,25 +1,22 @@
+import {generateLists} from "./mock/list.js";
+import {generateFilms} from "./mock/film.js";
 import {createUserProfile} from "./components/user-profile.js";
 import {createMainNavigation} from "./components/navigation.js";
-import {createAllFilmsLists} from "./components/index-grid-films-lists.js";
-import {createFilmListElement} from "./components/film-card.js";
-import {createShowMoreButton} from "./components/show-more-button.js";
+import {createLists} from "./components/index-lists.js";
+// import {createShowMoreButton} from "./components/show-more-button.js";
+import {createFilmTemplate} from "./components/film.js";
 
 
-const LengthFilmsList = {
-  MAIN: 5,
-  EXTRA: 2
-};
+const FILM_COUNT = 20;
+const films = generateFilms(FILM_COUNT);
+const lists = generateLists(films);
+// const topRatedFilms = films.slice().sort((a, b) => b.rating - a.rating);
+// const mostCommentedFilms = films.slice().sort((a, b) => b.comments - a.comments);
+
 
 // Функция для отрисоки элементов на странице
 const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
-};
-
-// Функция которая создает список фильмов в указанном месте и указанной длины
-const createFilmsList = (listContainer, listLength) => {
-  for (let i = 0; i < listLength; i++) {
-    render(listContainer, createFilmListElement());
-  }
 };
 
 const siteHeader = document.querySelector(`.header`);
@@ -32,17 +29,39 @@ render(siteHeader, createUserProfile());
 render(siteMainElement, createMainNavigation());
 
 // Возвращает компонент "Сетка разных списков фильмов"
-render(siteMainElement, createAllFilmsLists());
+render(siteMainElement, createLists(lists));
 
-const films = document.querySelector(`.films`);
-const filmsList = films.querySelector(`.films-list .films-list__container`);
+const listsContainers = document.querySelectorAll(`.films-list__container`);
 
-// Возвращает компонент "Гланый список фильмов"
-createFilmsList(filmsList, LengthFilmsList.MAIN);
+const getRenderData = (filmList, data) => {
+  return filmList.sort(data).slice(0, filmList.count);
+};
 
-// Возвращает компонент "Кнопка «Show more»"
-render(filmsList, createShowMoreButton(), `afterend`);
+/*
+// Рабочий развернутый вариант
+lists[0].sort(films).slice(0, lists[0].count)
+  .forEach((film) => render(listsContainers[0], createFilmTemplate(film)`));
 
-// Возвращает компонент "Дополнительные списки фильмов"
-const allFilmsListsExtra = films.querySelectorAll(`.films-list--extra .films-list__container`);
-allFilmsListsExtra.forEach((list) => createFilmsList(list, LengthFilmsList.EXTRA));
+lists[1].sort(films).slice(0, lists[1].count)
+  .forEach((film) => render(listsContainers[1], createFilmTemplate(film)));
+
+lists[2].sort(films).slice(0, lists[2].count)
+  .forEach((film) => render(listsContainers[2], createFilmTemplate(film)));
+*/
+
+/*
+// Рабочий вариант через for
+for (let i = 0; i < listsContainers.length; i++) {
+  const renderData = getRenderData(lists[i], films);
+  for (let j = 0; j < renderData.length; j++) {
+    render(listsContainers[i], createFilmTemplate(renderData[j]));
+  }
+}
+*/
+
+
+listsContainers.forEach((container) =>
+  getRenderData(lists, films).forEach((film)=>
+    render(container, createFilmTemplate(film)))
+);
+
