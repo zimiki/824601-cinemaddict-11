@@ -1,18 +1,16 @@
-import {generateLists} from "./mock/list.js";
-import {generateFilms} from "./mock/film.js";
-import {createUserProfile} from "./components/user-profile.js";
-import {createMainNavigation} from "./components/navigation.js";
-import {createLists} from "./components/index-lists.js";
-// import {createShowMoreButton} from "./components/show-more-button.js";
+import {INDEX_LISTS} from "./const.js";
 import {createFilmTemplate} from "./components/film.js";
+import {createLists} from "./components/index-lists.js";
+import {createMainNavigation} from "./components/navigation.js";
+import {createShowMoreButton} from "./components/show-more-button.js";
+import {createUserProfile} from "./components/user-profile.js";
+import {generateFilms} from "./mock/film.js";
 
-
-const FILM_COUNT = 20;
-const films = generateFilms(FILM_COUNT);
-const lists = generateLists(films);
-// const topRatedFilms = films.slice().sort((a, b) => b.rating - a.rating);
-// const mostCommentedFilms = films.slice().sort((a, b) => b.comments - a.comments);
-
+const DATA_COUNT = 20;
+const SHOWING_FILMS_COUNT_ON_START = 5;
+const SHOWING_FILMS_COUNT_BY_BUTTON = 5;
+const SHOW_EXTRA_FILMS_COUNT = 2;
+const films = generateFilms(DATA_COUNT);
 
 // Функция для отрисоки элементов на странице
 const render = (container, template, place = `beforeend`) => {
@@ -28,40 +26,40 @@ render(siteHeader, createUserProfile());
 // Возвращает компонент "Меню (фильтры и статистика)"
 render(siteMainElement, createMainNavigation());
 
-// Возвращает компонент "Сетка разных списков фильмов"
-render(siteMainElement, createLists(lists));
+// Возвращает компонент "Все списки фильмов"
+render(siteMainElement, createLists(INDEX_LISTS));
+const listsContainer = document.querySelector(`.films`);
 
-const listsContainers = document.querySelectorAll(`.films-list__container`);
 
-const getRenderData = (filmList, data) => {
-  return filmList.sort(data).slice(0, filmList.count);
-};
+// Список со всеми фильмами
+const allFilmsContainer = listsContainer.querySelector(`.films-list .films-list__container`);
+let showingFilmsCount = SHOWING_FILMS_COUNT_ON_START;
+films.slice(0, showingFilmsCount)
+  .forEach((film) => render(allFilmsContainer, createFilmTemplate(film)));
 
-/*
-// Рабочий развернутый вариант
-lists[0].sort(films).slice(0, lists[0].count)
-  .forEach((film) => render(listsContainers[0], createFilmTemplate(film)`));
+// Кнопка "Показать еще" для списка с основынми фильмами
+render(allFilmsContainer, createShowMoreButton(), `afterend`);
+const showMoreButton = listsContainer.querySelector(`.films-list__show-more`);
 
-lists[1].sort(films).slice(0, lists[1].count)
-  .forEach((film) => render(listsContainers[1], createFilmTemplate(film)));
+showMoreButton.addEventListener(`click`, () => {
+  const prevFilmsCount = showingFilmsCount;
+  showingFilmsCount = showingFilmsCount + SHOWING_FILMS_COUNT_BY_BUTTON;
 
-lists[2].sort(films).slice(0, lists[2].count)
-  .forEach((film) => render(listsContainers[2], createFilmTemplate(film)));
-*/
+  films.slice(prevFilmsCount, showingFilmsCount)
+    .forEach((film) => render(allFilmsContainer, createFilmTemplate(film)));
 
-/*
-// Рабочий вариант через for
-for (let i = 0; i < listsContainers.length; i++) {
-  const renderData = getRenderData(lists[i], films);
-  for (let j = 0; j < renderData.length; j++) {
-    render(listsContainers[i], createFilmTemplate(renderData[j]));
+  if (showingFilmsCount >= films.length) {
+    showMoreButton.remove();
   }
-}
-*/
+});
 
+// Списки с отсортированными фильмами
+const [topRatedContainer, mostCommentedContainer] = listsContainer.querySelectorAll(`.films-list--extra .films-list__container`);
 
-listsContainers.forEach((container) =>
-  getRenderData(lists, films).forEach((film)=>
-    render(container, createFilmTemplate(film)))
-);
+const topRatedFilms = films.slice().sort((a, b) => b.rating - a.rating);
+topRatedFilms.slice(0, SHOW_EXTRA_FILMS_COUNT)
+  .forEach((film) => render(topRatedContainer, createFilmTemplate(film)));
 
+const mostCommentedFilms = films.slice().sort((a, b) => b.comments - a.comments);
+mostCommentedFilms.slice(0, SHOW_EXTRA_FILMS_COUNT)
+  .forEach((film) => render(mostCommentedContainer, createFilmTemplate(film)));
