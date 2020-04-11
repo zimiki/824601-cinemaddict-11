@@ -13,4 +13,6 @@ const INDEX_LISTS = [
   },
 ];
 
-export {INDEX_LISTS};
+const FILTERS = [`All movies`, `Watchlist`, `History`, `Favorites`];
+
+export {INDEX_LISTS, FILTERS};

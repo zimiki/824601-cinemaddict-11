@@ -1,14 +1,15 @@
-export const createFilmTemplate = (film) => {
-  const {title, rating, year, duration, genre, description, comments} = film;
-  const {name, picture} = title;
+import {formatTime} from "../util.js";
+
+const createFilmTemplate = (film) => {
+  const {name, original, picture, rating, director, writers, actors, releaseDate, runTime, country, genre, description, age, comments} = film;
 
   return (`
     <article class="film-card">
           <h3 class="film-card__title">${name}</h3>
-          <p class="film-card__rating">${rating}</p>
+          <p class="film-card__rating">${rating.toFixed(1)}</p>
           <p class="film-card__info">
-            <span class="film-card__year">${year}</span>
-            <span class="film-card__duration">${duration}</span>
+            <span class="film-card__year">${releaseDate}</span>
+            <span class="film-card__duration">${formatTime(runTime)}</span>
             <span class="film-card__genre">${genre}</span>
           </p>
           <img src="./images/posters/${picture}" alt="" class="film-card__poster">
@@ -22,3 +23,4 @@ export const createFilmTemplate = (film) => {
         </article>`
   );
 };
+export {createFilmTemplate};

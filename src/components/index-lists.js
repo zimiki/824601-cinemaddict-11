@@ -11,12 +11,12 @@ const createListMarkup = (list) => {
   );
 };
 
-export const createLists = (lists) => {
+const createLists = (lists) => {
   const listsMarkup = lists.map(createListMarkup).join(`\n`);
-
   return (`<section class="films">
   ${listsMarkup}
   </section>`);
 };
 
+export {createLists};
 

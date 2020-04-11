@@ -1,10 +1,13 @@
 import {INDEX_LISTS} from "./const.js";
+import {createDetailsTemplate} from "./components/popup-details.js";
 import {createFilmTemplate} from "./components/film.js";
 import {createLists} from "./components/index-lists.js";
-import {createMainNavigation} from "./components/navigation.js";
+import {createNavigationTemplate} from "./components/navigation.js";
 import {createShowMoreButton} from "./components/show-more-button.js";
+import {createSortingTemplate} from "./components/sort.js";
 import {createUserProfile} from "./components/user-profile.js";
 import {generateFilms} from "./mock/film.js";
+import {generateNavItems} from "./mock/navigation.js";
 
 const DATA_COUNT = 20;
 const SHOWING_FILMS_COUNT_ON_START = 5;
@@ -24,7 +27,9 @@ const siteMainElement = document.querySelector(`.main`);
 render(siteHeader, createUserProfile());
 
 // Возвращает компонент "Меню (фильтры и статистика)"
-render(siteMainElement, createMainNavigation());
+const navItems = generateNavItems();
+render(siteMainElement, createNavigationTemplate(navItems));
+render(siteMainElement, createSortingTemplate());
 
 // Возвращает компонент "Все списки фильмов"
 render(siteMainElement, createLists(INDEX_LISTS));
@@ -63,3 +68,19 @@ topRatedFilms.slice(0, SHOW_EXTRA_FILMS_COUNT)
 const mostCommentedFilms = films.slice().sort((a, b) => b.comments - a.comments);
 mostCommentedFilms.slice(0, SHOW_EXTRA_FILMS_COUNT)
   .forEach((film) => render(mostCommentedContainer, createFilmTemplate(film)));
+
+// Вызов и скрытие popup-details. КЛИК ПО ПЕРВОМУ ФИЛЬМУ ОСНОВНОГО СПИСКА
+const filmCard = listsContainer.querySelector(`.film-card`);
+const footer = document.querySelector(`.footer`);
+
+const onFilmCardClick = () => {
+  render(footer, createDetailsTemplate(films[0]), `afterend`);
+  const filmDetails = document.querySelector(`.film-details`);
+  const filmDetailsClose = filmDetails.querySelector(`.film-details__close-btn`);
+  filmDetailsClose.addEventListener(`click`, () => {
+    filmDetails.remove();
+  });
+};
+filmCard.addEventListener(`click`, onFilmCardClick);
+
+
