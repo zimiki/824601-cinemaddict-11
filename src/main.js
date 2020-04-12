@@ -4,6 +4,7 @@ import {createDetailsTemplate} from "./components/popup-details.js";
 import {createFilmTemplate} from "./components/film.js";
 import {createLists} from "./components/index-lists.js";
 import {createNavigationTemplate} from "./components/navigation.js";
+import {createPopupControlsTemplate} from "./components/popup-controls.js";
 import {createShowMoreButton} from "./components/show-more-button.js";
 import {createSortingTemplate} from "./components/sort.js";
 import {createUserProfile} from "./components/user-profile.js";
@@ -76,12 +77,18 @@ const footer = document.querySelector(`.footer`);
 const onFilmCardClick = () => {
   render(footer, createDetailsTemplate(films[0]), `afterend`);
   const filmDetails = document.querySelector(`.film-details`);
+
+  const popupTopContainer = filmDetails.querySelector(`.form-details__top-container`);
+  render(popupTopContainer, createPopupControlsTemplate());
+
+  const popupBottomContainer = filmDetails.querySelector(`.form-details__bottom-container`);
+  render(popupBottomContainer, cteateCommentTemplate(films[0].comments));
+
   const filmDetailsClose = filmDetails.querySelector(`.film-details__close-btn`);
-  const filmInfo = filmDetails.querySelector(`.form-details__top-container`);
-  render(filmInfo, cteateCommentTemplate(films[0].comments), `afterend`);
   filmDetailsClose.addEventListener(`click`, () => {
     filmDetails.remove();
   });
 };
 
 filmCard.addEventListener(`click`, onFilmCardClick);
+

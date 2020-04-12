@@ -1,28 +1,5 @@
 import {formatTime, formatDate} from "../util.js";
 
-const CONTROLS = [
-  {
-    name: `watchlist`,
-    button: `Add to watchlist`,
-  },
-  {
-    name: `watched`,
-    button: `Already watched`,
-  },
-  {
-    name: `favorite`,
-    button: `Add to favorites`,
-  },
-];
-
-const createControlMarkup = (control) => {
-  const {name, button} = control;
-  return (`
-  <input type="checkbox" class="film-details__control-input visually-hidden" id="${name}" name="${name}">
-  <label for="${name}" class="film-details__control-label film-details__control-label--${name}">${button}</label>
-  `);
-};
-
 const createDetailMarkup = (detail) => {
   const [title, value] = detail;
   return (`
@@ -47,7 +24,6 @@ const createDetailsTemplate = (film) => {
     [`Country`, country],
   ];
   const delailsMarkup = details.map(createDetailMarkup).join(`\n`);
-  const controlsMarkup = CONTROLS.map(createControlMarkup).join(`\n`);
   const genresMarkup = genres
     .map((genre) => `<span class="film-details__genre">${genre}</span>`)
     .join(``);
@@ -89,11 +65,9 @@ const createDetailsTemplate = (film) => {
               </p>
             </div>
           </div>
-
-          <section class="film-details__controls">
-            ${controlsMarkup}
-          </section>
         </div>
+
+        <div class="form-details__bottom-container"></div>
       </form>
     </section>`
   );
