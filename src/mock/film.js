@@ -1,37 +1,39 @@
+import {generateComments} from "./comments.js";
+
 const FILMS_DATA = [
   {
     name: `The Dance of Life`,
-    ogiginal: `The Dance of Life`,
+    original: `The Dance of Life`,
     picture: `the-dance-of-life.jpg`
   },
   {
     name: `Sagebrush Trail`,
-    ogiginal: `Sagebrush Trail`,
+    original: `Sagebrush Trail`,
     picture: `sagebrush-trail.jpg`
   },
   {
     name: `The Man with the Golden Arm`,
-    ogiginal: `The Man with the Golden Arm`,
+    original: `The Man with the Golden Arm`,
     picture: `the-man-with-the-golden-arm.jpg`
   },
   {
     name: `Santa Claus Conquers the Martians`,
-    ogiginal: `Santa Claus Conquers the Martians`,
+    original: `Santa Claus Conquers the Martians`,
     picture: `santa-claus-conquers-the-martians.jpg`
   },
   {
     name: `Popeye the Sailor Meets Sindbad the Sailor`,
-    ogiginal: `Popeye the Sailor Meets Sindbad the Sailor`,
+    original: `Popeye the Sailor Meets Sindbad the Sailor`,
     picture: `popeye-meets-sinbad.png`
   },
   {
     name: `The Great Flamarion`,
-    ogiginal: `The Great Flamarion`,
+    original: `The Great Flamarion`,
     picture: `the-great-flamarion.jpg`
   },
   {
     name: `Made for Each Other`,
-    ogiginal: `Made for Each Other`,
+    original: `Made for Each Other`,
     picture: `made-for-each-other.png`
   },
 ];
@@ -61,60 +63,63 @@ const GENRES = [
 ];
 
 
-const NAME = [`Anthony`, `Anne`, `Herald`, `Richard`, `Dan`, `Mary`, `Erich`];
-const SURNAME = [`Mann`, `von Stroheim`, `Hughes`, `Weil`, `Pit`, `Brown`, `Duryea`];
-const getRandHuman = () => {
-  return (`${getRandomArrayItem(NAME)} ${getRandomArrayItem(SURNAME)}`);
-
-};
-
-
 // Генерация включая min, и включая max
 const getRandomIntegerNumber = (min, max) => {
   return Math.floor(min + Math.random() * (max + 1 - min));
 };
-
 // Генерация случайного элемента из массива
 const getRandomArrayItem = (array) => {
   const randomIndex = getRandomIntegerNumber(0, (array.length - 1));
   return array[randomIndex];
 };
-
-
-// Генерация нового массива случаной длины и неповторяющегося содержания
-const getNewDescription = (arr, max) => {
-  const newArr = [];
-  const newArrLength = getRandomIntegerNumber(1, max);
-  while (newArr.length < newArrLength) {
-    let element = getRandomArrayItem(arr);
-    if (newArr.indexOf(element) === -1) {
-      newArr.push(element);
-    }
+// Генерация нового массива(случайной длины) на основе исходного
+const getRandomArrayFromArray = (prototype, maxLengthNewArr) => {
+  const count = getRandomIntegerNumber(1, maxLengthNewArr);
+  const newArr = new Set();
+  while (newArr.size < count) {
+    newArr.add(getRandomArrayItem(prototype));
   }
-  const newDescription = newArr.join(` `);
-  return newDescription;
+  return Array.from(newArr);
 };
 
+// Генерация случаного имени и фамилии
+const NAME = [`Anthony`, `Anne`, `Herald`, `Richard`, `Dan`, `Mary`, `Erich`, `Kate`];
+const SURNAME = [`Mann`, `von Stroheim`, `Hughes`, `Weil`, `Pit`, `Brown`, `Duryea`, `Ivanov`];
+
+const getRandHuman = () => {
+  return (`${getRandomArrayItem(NAME)} ${getRandomArrayItem(SURNAME)}`);
+};
+const getRandomHumans = (min, max) => {
+  const count = getRandomIntegerNumber(min, max);
+  return Array.from({length: count}, getRandHuman).join`, `;
+};
+
+// Генерация случайной даты
+const getRandomDate = (start, end) => {
+  const startDate = new Date(start, 1, 1).getTime();
+  const endDate = new Date(end, 1, 1).getTime();
+  return new Date(getRandomIntegerNumber(startDate, endDate));
+};
 
 const generateFilm = () => {
-  const randFilm = getRandomArrayItem(FILMS_DATA);
+  const randomFilm = getRandomArrayItem(FILMS_DATA);
   return {
-    name: randFilm.name,
-    ogiginal: randFilm.original,
-    picture: randFilm.picture,
+    name: randomFilm.name,
+    original: randomFilm.original,
+    picture: randomFilm.picture,
     rating: getRandomIntegerNumber(10, 100) / 10,
     director: getRandHuman(),
-    writers: getRandHuman(),
-    actors: getRandHuman(),
-    releaseDate: getRandomIntegerNumber(1950, 1985), // поправить
-    runTime: getRandomIntegerNumber(60, 200),
+    writers: getRandomHumans(1, 3),
+    actors: getRandomHumans(3, 7),
+    release: getRandomDate(1920, 2015),
+    duration: getRandomIntegerNumber(60, 200),
     country: `USA`,
-    genre: getRandomArrayItem(GENRES),
-    description: getNewDescription(DESCRIPTIONS, 5),
+    genres: getRandomArrayFromArray(GENRES, 3),
+    description: getRandomArrayFromArray(DESCRIPTIONS, 5).join(` `),
     age: `18`,
-    comments: getRandomIntegerNumber(1, 465), //* * Обратите внимание, комментарии — это отдельная структура данных с эмоцией, датой, автором и сообщением, а не просто массив строк в структуре фильма
-    watchList: Math.random() > 0.5,
-    alreadyWatched: Math.random() > 0.5,
+    comments: generateComments(2, 5),
+    watchlist: Math.random() > 0.5,
+    watched: Math.random() > 0.5,
     favorites: Math.random() > 0.5,
   };
 };

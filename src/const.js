@@ -1,18 +1,60 @@
 const INDEX_LISTS = [
   {
     name: `All movies. Upcoming`,
-    type: `all`,
+    type: `films-list`,
+    showHeader: false,
   },
   {
     name: `Top rated`,
-    type: `extra`,
+    type: `films-list--extra`,
+    showHeader: true,
   },
   {
     name: `Most commented`,
-    type: `extra`,
+    type: `films-list--extra`,
+    showHeader: true,
   },
 ];
 
-const FILTERS = [`All movies`, `Watchlist`, `History`, `Favorites`];
+const NAVIGATION_ITEMS = [
+  {
+    name: `All movies`,
+    href: `#all`,
+    filter() {
+      const count = Math.floor(Math.random() * 10);
+      return count;
+    },
+    showCount: false,
+  },
+  {
+    name: `Watchlist`,
+    href: `#watchlist`,
+    filter() {
+      const count = Math.floor(Math.random() * 10);
+      return count;
+    },
+    showCount: true,
+  },
+  {
+    name: `History`,
+    href: `#history`,
+    filter() {
+      const count = Math.floor(Math.random() * 10);
+      return count;
+    },
+    showCount: true,
+  },
+  {
+    name: `Favorites`,
+    href: `#favorites`,
+    filter() {
+      const count = Math.floor(Math.random() * 10);
+      return count;
+    },
+    showCount: true,
+  },
+];
 
-export {INDEX_LISTS, FILTERS};
+const EMOJIIS = [`smile`, `sleeping`, `puke`, `angry`];
+
+export {INDEX_LISTS, NAVIGATION_ITEMS, EMOJIIS};

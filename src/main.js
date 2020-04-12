@@ -1,4 +1,5 @@
-import {INDEX_LISTS} from "./const.js";
+import {INDEX_LISTS, NAVIGATION_ITEMS} from "./const.js";
+import {cteateCommentTemplate} from "./components/comments.js";
 import {createDetailsTemplate} from "./components/popup-details.js";
 import {createFilmTemplate} from "./components/film.js";
 import {createLists} from "./components/index-lists.js";
@@ -7,7 +8,7 @@ import {createShowMoreButton} from "./components/show-more-button.js";
 import {createSortingTemplate} from "./components/sort.js";
 import {createUserProfile} from "./components/user-profile.js";
 import {generateFilms} from "./mock/film.js";
-import {generateNavItems} from "./mock/navigation.js";
+
 
 const DATA_COUNT = 20;
 const SHOWING_FILMS_COUNT_ON_START = 5;
@@ -27,8 +28,7 @@ const siteMainElement = document.querySelector(`.main`);
 render(siteHeader, createUserProfile());
 
 // Возвращает компонент "Меню (фильтры и статистика)"
-const navItems = generateNavItems();
-render(siteMainElement, createNavigationTemplate(navItems));
+render(siteMainElement, createNavigationTemplate(NAVIGATION_ITEMS));
 render(siteMainElement, createSortingTemplate());
 
 // Возвращает компонент "Все списки фильмов"
@@ -77,10 +77,11 @@ const onFilmCardClick = () => {
   render(footer, createDetailsTemplate(films[0]), `afterend`);
   const filmDetails = document.querySelector(`.film-details`);
   const filmDetailsClose = filmDetails.querySelector(`.film-details__close-btn`);
+  const filmInfo = filmDetails.querySelector(`.form-details__top-container`);
+  render(filmInfo, cteateCommentTemplate(films[0].comments), `afterend`);
   filmDetailsClose.addEventListener(`click`, () => {
     filmDetails.remove();
   });
 };
+
 filmCard.addEventListener(`click`, onFilmCardClick);
-
-

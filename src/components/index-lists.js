@@ -1,10 +1,9 @@
 const createListMarkup = (list) => {
-  const {name, type} = list;
-  const isAllFilms = `all`;
+  const {name, type, showHeader} = list;
 
   return (`
-      <section class="${type === isAllFilms ? `films-list` : `films-list--extra`}">
-      <h2 class="films-list__title ${type === isAllFilms ? ` visually-hidden` : ``}">${name}</h2>
+      <section class="${type}">
+      <h2 class="films-list__title ${showHeader ? `` : `visually-hidden`}">${name}</h2>
       <div class="films-list__container">
       </div>
     </section>`
