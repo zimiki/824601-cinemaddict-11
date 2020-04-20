@@ -1,3 +1,19 @@
+const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`
+};
+
+const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
 const MONTHS = {
   0: `January`,
   1: `February`,
@@ -12,7 +28,6 @@ const MONTHS = {
   10: `November`,
   11: `December`,
 };
-
 
 const formatTime = (time) => {
   const hours = Math.floor(time / 60);
@@ -29,4 +44,12 @@ const formatDate = (date) => {
   return `${day} ${MONTHS[month]} ${year}`;
 };
 
-export {formatTime, formatDate};
+// Вспомогательная функцию для создания DOM-элемента
+const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+  return newElement.firstChild;
+};
+
+
+export {formatTime, formatDate, createElement, RenderPosition, render};

@@ -1,4 +1,4 @@
-import {formatTime} from "../util.js";
+import {formatTime, createElement} from "../util.js";
 
 const CONTROLS = [
   {
@@ -35,22 +35,49 @@ const createFilmTemplate = (film) => {
   const {name, picture, rating, release, duration, genres, description, comments} = film;
   const controlsMarkup = CONTROLS.map(createControlMarkup).join(`\n`);
 
+  const filmDecription = getShortText(description, maxDescriptionSymbol);
+  const filmYear = release.getFullYear();
+  const filmRating = rating.toFixed(1);
+  const filmDuration = formatTime(duration);
+  const filmComments = comments.length;
+
   return (`
     <article class="film-card">
           <h3 class="film-card__title">${name}</h3>
-          <p class="film-card__rating">${rating.toFixed(1)}</p>
+          <p class="film-card__rating">${filmRating}</p>
           <p class="film-card__info">
-            <span class="film-card__year">${release.getFullYear()}</span>
-            <span class="film-card__duration">${formatTime(duration)}</span>
+            <span class="film-card__year">${filmYear}</span>
+            <span class="film-card__duration">${filmDuration}</span>
             <span class="film-card__genre">${genres}</span>
           </p>
           <img src="./images/posters/${picture}" alt="" class="film-card__poster">
-          <p class="film-card__description">${getShortText(description, maxDescriptionSymbol)}</p>
-          <a class="film-card__comments">${comments.length} comments</a>
+          <p class="film-card__description">${filmDecription}</p>
+          <a class="film-card__comments">${filmComments} comments</a>
           <form class="film-card__controls">
           ${controlsMarkup}
           </form>
         </article>`
   );
 };
-export {createFilmTemplate};
+
+export default class Film {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,14 +1,17 @@
-import {INDEX_LISTS, NAVIGATION_ITEMS} from "./const.js";
+
+/* import {INDEX_LISTS, NAVIGATION_ITEMS} from "./const.js";
 import {cteateCommentTemplate} from "./components/comments.js";
 import {createDetailsTemplate} from "./components/popup-details.js";
-import {createFilmTemplate} from "./components/film.js";
+import FilmComponent from "./components/film.js"; // ok
 import {createLists} from "./components/index-lists.js";
 import {createNavigationTemplate} from "./components/navigation.js";
 import {createPopupControlsTemplate} from "./components/popup-controls.js";
 import {createShowMoreButton} from "./components/show-more-button.js";
 import {createSortingTemplate} from "./components/sort.js";
-import {createUserProfile} from "./components/user-profile.js";
-import {generateFilms} from "./mock/film.js";
+*/
+import UserProfileComponent from "./components/user-profile.js";// ok
+import {generateFilms} from "./mock/film.js"; // ok
+import {render, RenderPosition} from "./util.js"; // ok
 
 
 const DATA_COUNT = 20;
@@ -17,16 +20,16 @@ const SHOWING_FILMS_COUNT_BY_BUTTON = 5;
 const SHOW_EXTRA_FILMS_COUNT = 2;
 const films = generateFilms(DATA_COUNT);
 
-// Функция для отрисоки элементов на странице
-const render = (container, template, place = `beforeend`) => {
-  container.insertAdjacentHTML(place, template);
-};
+const siteHeaderElement = document.querySelector(`.header`);
+render(siteHeaderElement, new UserProfileComponent().getElement(), RenderPosition.BEFOREEND);
 
-const siteHeader = document.querySelector(`.header`);
+
+/*
 const siteMainElement = document.querySelector(`.main`);
 
-// Возвращает компонент "Звание пользователя"
-render(siteHeader, createUserProfile());
+
+--// Возвращает компонент "Звание пользователя"
+--render(siteHeaderElement, createUserProfile());
 
 // Возвращает компонент "Меню (фильтры и статистика)"
 render(siteMainElement, createNavigationTemplate(NAVIGATION_ITEMS));
@@ -91,4 +94,6 @@ const onFilmCardClick = () => {
 };
 
 filmCard.addEventListener(`click`, onFilmCardClick);
+*/
+
 
