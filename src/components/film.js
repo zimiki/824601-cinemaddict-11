@@ -26,9 +26,9 @@ const getShortText = (text, maxLength) => {
 
 const createControlMarkup = (control) => {
   const {button, buttonClass} = control;
-  return (`
-    <button class="film-card__controls-item button film-card__controls-item--${buttonClass}">${button}</button>
-  `);
+  return (
+    `<button class="film-card__controls-item button film-card__controls-item--${buttonClass}">${button}</button>`
+  );
 };
 
 const createFilmTemplate = (film) => {
@@ -41,22 +41,22 @@ const createFilmTemplate = (film) => {
   const filmDuration = formatTime(duration);
   const filmComments = comments.length;
 
-  return (`
-    <article class="film-card">
-          <h3 class="film-card__title">${name}</h3>
-          <p class="film-card__rating">${filmRating}</p>
-          <p class="film-card__info">
-            <span class="film-card__year">${filmYear}</span>
-            <span class="film-card__duration">${filmDuration}</span>
-            <span class="film-card__genre">${genres}</span>
-          </p>
-          <img src="./images/posters/${picture}" alt="" class="film-card__poster">
-          <p class="film-card__description">${filmDecription}</p>
-          <a class="film-card__comments">${filmComments} comments</a>
-          <form class="film-card__controls">
-          ${controlsMarkup}
-          </form>
-        </article>`
+  return (
+    `<article class="film-card">
+      <h3 class="film-card__title">${name}</h3>
+      <p class="film-card__rating">${filmRating}</p>
+      <p class="film-card__info">
+        <span class="film-card__year">${filmYear}</span>
+        <span class="film-card__duration">${filmDuration}</span>
+        <span class="film-card__genre">${genres}</span>
+      </p>
+      <img src="./images/posters/${picture}" alt="" class="film-card__poster">
+      <p class="film-card__description">${filmDecription}</p>
+      <a class="film-card__comments">${filmComments} comments</a>
+      <form class="film-card__controls">
+        ${controlsMarkup}
+      </form>
+      </article>`
   );
 };
 
@@ -65,18 +65,15 @@ export default class Film {
     this._film = film;
     this._element = null;
   }
-
   getTemplate() {
     return createFilmTemplate(this._film);
   }
-
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
     }
     return this._element;
   }
-
   removeElement() {
     this._element = null;
   }

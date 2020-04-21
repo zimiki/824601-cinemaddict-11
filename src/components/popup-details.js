@@ -1,16 +1,16 @@
-import {formatTime, formatDate} from "../util.js";
+import {formatTime, formatDate, createElement} from "../util.js";
 
 const createDetailMarkup = (detail) => {
   const [title, value] = detail;
-  return (`
-  <tr class="film-details__row">
-  <td class="film-details__term">${title}</td>
-  <td class="film-details__cell">${value}</td>
-  </tr>
-`);
+  return (
+    `<tr class="film-details__row">
+      <td class="film-details__term">${title}</td>
+      <td class="film-details__cell">${value}</td>
+    </tr>`
+  );
 };
 
-const createDetailsTemplate = (film) => {
+const createPopupTemplate = (film) => {
   const {
     name, original, picture, rating, description, age,
     director, writers, actors, release, duration, country, genres} = film;
@@ -23,13 +23,14 @@ const createDetailsTemplate = (film) => {
     [`Runtime`, formatTime(duration)],
     [`Country`, country],
   ];
+
   const delailsMarkup = details.map(createDetailMarkup).join(`\n`);
   const genresMarkup = genres
     .map((genre) => `<span class="film-details__genre">${genre}</span>`)
     .join(``);
 
-  return (`
-    <section class="film-details">
+  return (
+    `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
         <div class="form-details__top-container">
           <div class="film-details__close">
@@ -40,7 +41,6 @@ const createDetailsTemplate = (film) => {
               <img class="film-details__poster-img" src="./images/posters/${picture}" alt="${name}">
               <p class="film-details__age">${age}+</p>
             </div>
-
             <div class="film-details__info">
               <div class="film-details__info-head">
                 <div class="film-details__title-wrap">
@@ -66,11 +66,27 @@ const createDetailsTemplate = (film) => {
             </div>
           </div>
         </div>
-
         <div class="form-details__bottom-container"></div>
       </form>
     </section>`
   );
 };
 
-export {createDetailsTemplate};
+export default class Popup {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+  getTemplate() {
+    return createPopupTemplate(this._film);
+  }
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+  removeElement() {
+    this._element = null;
+  }
+}
