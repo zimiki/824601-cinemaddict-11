@@ -2,10 +2,11 @@ import {createElement} from "../util";
 
 const createFilmsList = (list) => {
   const {name, type, showHeader} = list;
+  const listHeader = showHeader ? `` : `visually-hidden`;
 
   return (
     `<section class="${type}">
-      <h2 class="films-list__title ${showHeader ? `` : `visually-hidden`}">${name}</h2>
+      <h2 class="films-list__title ${listHeader}">${name}</h2>
       <div class="films-list__container">
       </div>
     </section>`

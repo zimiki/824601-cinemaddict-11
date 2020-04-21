@@ -28,8 +28,8 @@ const createPopupControlsTemplate = () =>{
   return (
     `<section class="film-details__controls">
     ${controlsMarkup}
-    </section>``
-  `);
+    </section>`
+  );
 };
 
 export default class PopupControls {
