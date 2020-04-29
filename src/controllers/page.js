@@ -1,28 +1,37 @@
-import SortingComponent from "../components/sort.js";
+import SortComponent from "../components/sort.js";
 import {render, RenderPosition} from "../utils/render.js";
-import FilmsContainerController from "./films-container.js";
+import FilmsListController from "./films-list.js";
 import {INDEX_LISTS, NAVIGATION_ITEMS} from "../const.js";
-import ListsContainerComponent from "../components/lists-container.js";
 import NavigationComponent from "../components/navigation.js";
 
 
 export default class PageController {
   constructor(container) {
     this._container = container;
+    this._sortComponent = new SortComponent();
+    this._navigationComponent = new NavigationComponent(NAVIGATION_ITEMS);
   }
 
   render(data) {
-    // Возвращает компонент "Меню (фильтры и статистика)"
+    const container = this._container;
     const siteMainElement = document.querySelector(`.main`);
-    render(siteMainElement, new NavigationComponent(NAVIGATION_ITEMS), RenderPosition.BEFOREEND);
-    render(siteMainElement, new SortingComponent(), RenderPosition.BEFOREEND);
+    const filmsListController = new FilmsListController(container);
 
-    // Возвращает компонент  "Контейнер для всех списков фильмов"
-    const listsContainerComponent = new ListsContainerComponent();
-    const filmsContainerController = new FilmsContainerController(listsContainerComponent);
-    render(siteMainElement, listsContainerComponent, RenderPosition.BEFOREEND);
-    filmsContainerController.render(INDEX_LISTS[0], data);
+    render(siteMainElement, this._sortComponent, RenderPosition.AFTERBEGIN);
+    render(siteMainElement, this._navigationComponent, RenderPosition.AFTERBEGIN);
+
+    INDEX_LISTS.forEach((list) => {
+      filmsListController.render(list, data);
+    });
     console.log(data);
   }
 
 }
+
+/*
+const boardComponent = new BoardComponent();
+const boardController = new BoardController(boardComponent);
+
+render(siteMainElement, boardComponent, RenderPosition.BEFOREEND);
+boardController.render(tasks);
+*/

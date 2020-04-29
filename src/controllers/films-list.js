@@ -35,7 +35,7 @@ const renderFilm = (filmsListElement, film) => {
 };
 
 
-export default class FilmsContainerController {
+export default class FilmsListController {
   constructor(container) {
     this._container = container;
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
@@ -73,13 +73,3 @@ export default class FilmsContainerController {
     });
   }
 }
-
-
-/*
-  render(lists, data) {
-    const container = this._container.getElement();
-    lists.forEach((list) => {
-      renderFilmList(container, list, data);
-    });
-  }
-  */
