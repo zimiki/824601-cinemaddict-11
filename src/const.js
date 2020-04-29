@@ -5,7 +5,6 @@ const INDEX_LISTS = [
     showHeader: false,
     showMoreButton: true,
     getData(data) {
-      console.log(data.slice(0, 5));
       return data.slice();
     }
   },
@@ -15,10 +14,7 @@ const INDEX_LISTS = [
     showHeader: true,
     showMoreButton: false,
     getData(data) {
-
-      const aa = data.slice().sort((a, b) => b.rating - a.rating);
-      console.log(aa.slice(0, 3));
-      return aa.slice(0, 3);
+      return data.slice().sort((a, b) => b.rating - a.rating);
     }
   },
   {
@@ -27,10 +23,7 @@ const INDEX_LISTS = [
     showHeader: true,
     showMoreButton: false,
     getData(data) {
-
-      const bb = data.slice().sort((a, b) => b.comments - a.comments);
-      console.log(bb.slice(0, 2));
-      return bb.slice(0, 2);
+      return data.slice().sort((a, b) => b.comments.length - a.comments.length);
     }
   },
 ];
