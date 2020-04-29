@@ -1,5 +1,5 @@
 import {EMOJIIS} from "../const.js";
-import {createElement} from "../util";
+import AbstractComponent from "./abstract-component.js";
 
 const createCommentMarkup = (comment) => {
   const {text, autor, data, emoji} = comment;
@@ -54,21 +54,12 @@ const cteateCommentTemplate = (comments) => {
   );
 };
 
-export default class Comments {
+export default class Comments extends AbstractComponent {
   constructor(comments) {
+    super();
     this._comments = comments;
-    this._element = null;
   }
   getTemplate() {
     return cteateCommentTemplate(this._comments);
-  }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }

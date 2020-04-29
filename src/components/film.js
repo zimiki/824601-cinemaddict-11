@@ -1,4 +1,5 @@
-import {formatTime, createElement} from "../util.js";
+import AbstractComponent from "./abstract-component.js";
+import {formatTime} from "../utils/common.js";
 
 const CONTROLS = [
   {
@@ -34,7 +35,6 @@ const createControlMarkup = (control) => {
 const createFilmTemplate = (film) => {
   const {name, picture, rating, release, duration, genres, description, comments} = film;
   const controlsMarkup = CONTROLS.map(createControlMarkup).join(`\n`);
-
   const filmDecription = getShortText(description, maxDescriptionSymbol);
   const filmYear = release.getFullYear();
   const filmRating = rating.toFixed(1);
@@ -60,21 +60,15 @@ const createFilmTemplate = (film) => {
   );
 };
 
-export default class Film {
+export default class Film extends AbstractComponent {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
   }
   getTemplate() {
     return createFilmTemplate(this._film);
   }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
+  setFilmCardHandler(handler) {
+    this.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, handler);
   }
 }

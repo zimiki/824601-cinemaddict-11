@@ -1,4 +1,5 @@
-import {formatTime, formatDate, createElement} from "../util.js";
+import AbstractComponent from "./abstract-component.js";
+import {formatTime, formatDate} from "../utils/common.js";
 
 const createDetailMarkup = (detail) => {
   const [title, value] = detail;
@@ -72,21 +73,15 @@ const createPopupTemplate = (film) => {
   );
 };
 
-export default class Popup {
+export default class Popup extends AbstractComponent {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
   }
   getTemplate() {
     return createPopupTemplate(this._film);
   }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
+  setPopupCloseHandler(handler) {
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, handler);
   }
 }

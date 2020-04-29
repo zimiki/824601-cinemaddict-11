@@ -1,4 +1,4 @@
-import {createElement} from "../util";
+import AbstractComponent from "./abstract-component.js";
 
 const CONTROLS_POPUP = [
   {
@@ -32,20 +32,8 @@ const createPopupControlsTemplate = () =>{
   );
 };
 
-export default class PopupControls {
-  constructor() {
-    this._element = null;
-  }
+export default class PopupControls extends AbstractComponent {
   getTemplate() {
     return createPopupControlsTemplate();
-  }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }
