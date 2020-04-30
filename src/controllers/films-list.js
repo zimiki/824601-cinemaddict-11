@@ -12,7 +12,6 @@ const SHOWING_FILMS_COUNT_BY_BUTTON = 5;
 const SHOW_EXTRA_FILMS_COUNT = 2;
 const indexBody = document.querySelector(`body`);
 
-
 const renderFilm = (filmsListElement, film) => {
   const filmComponent = new FilmComponent(film);
   render(filmsListElement, filmComponent, RenderPosition.BEFOREEND);
@@ -23,7 +22,6 @@ const renderFilm = (filmsListElement, film) => {
     const popupBottomContainer = popupComponent.getElement().querySelector(`.form-details__bottom-container`);
     render(popupTopContainer, new PopupControlsComponent(), RenderPosition.BEFOREEND);
     render(popupBottomContainer, new CommentsComponent(film.comments), RenderPosition.BEFOREEND);
-
 
     popupComponent.setPopupCloseHandler(() => {
       popupComponent.getElement().remove();
@@ -40,7 +38,6 @@ export default class FilmsListController {
     this._container = container;
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
   }
-
 
   render(list, data) {
 

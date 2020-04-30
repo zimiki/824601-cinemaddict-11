@@ -50,7 +50,8 @@ export default class PageController {
       this._listsContainerComponent.getElement().innerHTML = ``;
 
       INDEX_LISTS.forEach((list) => {
-        filmsListController.render(list, sortedFilms);
+        const renderData = list.getData(sortedFilms);
+        filmsListController.render(list, renderData);
       });
     });
   }
