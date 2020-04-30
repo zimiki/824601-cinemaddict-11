@@ -41,34 +41,40 @@ export default class FilmsListController {
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
   }
 
-  render(list, data) {
-    const container = this._container.getElement();
-    const filmListComponent = new FilmsListComponent(list);
-    const filmsListElement = filmListComponent.getElement().querySelector(`.films-list__container`);
-    const renderData = list.getData(data);
-    let renderFilms;
 
-    if (list.showMoreButton) { // Логика showMoreButton
-      let showingFilmsCount = SHOWING_FILMS_COUNT_ON_START;
-      renderFilms = renderData.slice(0, showingFilmsCount);
+  render(list, data) {
+
+    const renderShowMoreButton = () => {
+      if (showingFilmsCount >= data.length) {
+        return;
+      }
       render(filmListComponent.getElement(), this._showMoreButtonComponent, RenderPosition.BEFOREEND);
       this._showMoreButtonComponent.setClickHandler(() => {
         const prevFilmsCount = showingFilmsCount;
         showingFilmsCount = showingFilmsCount + SHOWING_FILMS_COUNT_BY_BUTTON;
-        renderData.slice(prevFilmsCount, showingFilmsCount).forEach((film) => {
+        data.slice(prevFilmsCount, showingFilmsCount).forEach((film) => {
           renderFilm(filmsListElement, film);
         });
-
         if (showingFilmsCount >= data.length) {
           remove(this._showMoreButtonComponent);
         }
       });
+    };
+
+    const container = this._container.getElement();
+    const filmListComponent = new FilmsListComponent(list);
+    const filmsListElement = filmListComponent.getElement().querySelector(`.films-list__container`);
+    let showingFilmsCount = SHOWING_FILMS_COUNT_ON_START;
+    let renderData = data.slice(0, showingFilmsCount);
+
+    if (list.showMoreButton) {
+      renderShowMoreButton();
     } else {
-      renderFilms = renderData.slice(0, SHOW_EXTRA_FILMS_COUNT);
+      renderData = data.slice(0, SHOW_EXTRA_FILMS_COUNT);
     }
 
     render(container, filmListComponent, RenderPosition.BEFOREEND);
-    renderFilms.forEach((film) => {
+    renderData.forEach((film) => {
       renderFilm(filmsListElement, film);
     });
   }
