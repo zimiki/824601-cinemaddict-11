@@ -20,8 +20,8 @@ const renderFilm = (filmsListElement, film) => {
     indexBody.classList.add(`hide-overflow`);
     const popupComponent = new PopupComponent(film);
     const popupTopContainer = popupComponent.getElement().querySelector(`.form-details__top-container`);
-    render(popupTopContainer, new PopupControlsComponent(), RenderPosition.BEFOREEND);
     const popupBottomContainer = popupComponent.getElement().querySelector(`.form-details__bottom-container`);
+    render(popupTopContainer, new PopupControlsComponent(), RenderPosition.BEFOREEND);
     render(popupBottomContainer, new CommentsComponent(film.comments), RenderPosition.BEFOREEND);
 
 

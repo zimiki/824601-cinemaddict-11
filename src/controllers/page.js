@@ -1,4 +1,4 @@
-import SortComponent from "../components/sort.js";
+import SortComponent, {SortType} from "../components/sort.js";
 import {render, RenderPosition} from "../utils/render.js";
 import FilmsListController from "./films-list.js";
 import {INDEX_LISTS} from "../const.js";
@@ -11,13 +11,13 @@ const getSortedFilms = (films, sortType) => {
   const showingTasks = films.slice();
 
   switch (sortType) {
+    case SortType.DEFAULT:
+      sortedFilms = showingTasks;
+      break;
     case SortType.DATE_UP:
       sortedFilms = showingTasks;
       break;
     case SortType.RATING:
-      sortedFilms = showingTasks;
-      break;
-    case SortType.DEFAULT:
       sortedFilms = showingTasks;
       break;
   }
@@ -47,7 +47,7 @@ export default class PageController {
 
     this._sortComponent.setSortTypeChangeHandler((sortType) => {
       const sortedFilms = getSortedFilms(data, sortType);
-      this._listsContainerComponent.getElement.innerHTML = ``;
+      this._listsContainerComponent.getElement().innerHTML = ``;
 
       INDEX_LISTS.forEach((list) => {
         filmsListController.render(list, sortedFilms);
