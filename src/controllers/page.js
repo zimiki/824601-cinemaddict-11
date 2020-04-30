@@ -8,17 +8,17 @@ import ListsContainerComponent from "../components/lists-container.js";
 
 const getSortedFilms = (films, sortType) => {
   let sortedFilms = [];
-  const showingTasks = films.slice();
+  const showingFilms = films.slice();
 
   switch (sortType) {
     case SortType.DEFAULT:
-      sortedFilms = showingTasks;
+      sortedFilms = showingFilms;
       break;
     case SortType.DATE_UP:
-      sortedFilms = showingTasks;
+      sortedFilms = showingFilms.sort((a, b) => b.release - a.release);
       break;
     case SortType.RATING:
-      sortedFilms = showingTasks;
+      sortedFilms = showingFilms.sort((a, b) => b.rating - a.rating);
       break;
   }
   return sortedFilms;
