@@ -64,7 +64,6 @@ export default class FilmsListController {
     };
 
     const filmsListElement = this._container.getElement().querySelector(`.films-list__container`);
-    console.log(filmsListElement);
     filmsListElement.innerHTML = ``;
 
     if (this._list.showMoreButton) {

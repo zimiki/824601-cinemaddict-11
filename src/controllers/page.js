@@ -4,6 +4,7 @@ import FilmsListController from "./films-list.js";
 import {INDEX_LISTS} from "../const.js";
 import NavigationComponent from "../components/navigation.js";
 import ListsContainerComponent from "../components/lists-container.js";
+import FilmsListComponent from "../components/films-list.js";
 
 
 export default class PageController {
@@ -20,9 +21,11 @@ export default class PageController {
     render(container, this._sortComponent, RenderPosition.BEFOREEND);
     render(container, this._listsContainerComponent, RenderPosition.BEFOREEND);
 
-    const controllers = INDEX_LISTS.map((list)=>{
+    const controllers = INDEX_LISTS.map((list) => {
       const renderData = list.getData(data);
-      const controller = new FilmsListController(this._listsContainerComponent, list);
+      const filmListComponent = new FilmsListComponent(list);
+      render(this._listsContainerComponent.getElement(), filmListComponent, RenderPosition.BEFOREEND);
+      const controller = new FilmsListController(filmListComponent, list);
       controller.render(renderData);
       return controller;
     });
