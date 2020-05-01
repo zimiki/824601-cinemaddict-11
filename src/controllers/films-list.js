@@ -1,6 +1,6 @@
 import CommentsComponent from "../components/comments.js";
 import FilmComponent from "../components/film.js";
-import FilmsListComponent from "../components/films-list.js";
+
 import PopupControlsComponent from "../components/popup-controls.js";
 import PopupComponent from "../components/popup-details.js";
 import ShowMoreButtonComponent from "../components/show-more-button.js";
@@ -38,13 +38,10 @@ export default class FilmsListController {
     this._container = container;
     this._list = list;
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
-    this._filmListComponent = new FilmsListComponent(list);
   }
 
   render(data) {
-    remove(this._filmListComponent);
     remove(this._showMoreButtonComponent);
-
     let showingFilmsCount = SHOWING_FILMS_COUNT_ON_START;
     let renderData = data.slice(0, showingFilmsCount);
 
@@ -63,13 +60,11 @@ export default class FilmsListController {
       if (showingFilmsCount >= data.length) {
         return;
       }
-      render(this._filmListComponent.getElement(), this._showMoreButtonComponent, RenderPosition.BEFOREEND);
+      render(this._container.getElement(), this._showMoreButtonComponent, RenderPosition.BEFOREEND);
     };
 
-    const container = this._container.getElement();
-    render(container, this._filmListComponent, RenderPosition.BEFOREEND);
-
-    const filmsListElement = this._filmListComponent.getElement().querySelector(`.films-list__container`);
+    const filmsListElement = this._container.getElement().querySelector(`.films-list__container`);
+    console.log(filmsListElement);
     filmsListElement.innerHTML = ``;
 
     if (this._list.showMoreButton) {
