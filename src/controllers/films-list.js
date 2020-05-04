@@ -6,12 +6,11 @@ const SHOWING_FILMS_COUNT_ON_START = 5;
 const SHOWING_FILMS_COUNT_BY_BUTTON = 5;
 
 const renderFilms = (filmsListElement, films) =>{
-  return films.map(()=>{
+  return films.map((film)=>{
     const movieController = new MovieController(filmsListElement);
-    movieController.render(films);
+    movieController.render(film);
     return movieController;
   });
-
 };
 
 export default class FilmsListController {
@@ -27,11 +26,11 @@ export default class FilmsListController {
   render(data) {
     this._films = data;
     remove(this._showMoreButtonComponent);
-    let showingFilmsCount = SHOWING_FILMS_COUNT_ON_START;
+    this._showingFilmCount = SHOWING_FILMS_COUNT_ON_START;
     const filmsListElement = this._container.getElement().querySelector(`.films-list__container`);
     filmsListElement.innerHTML = ``;
 
-    const newFilms = renderFilms(filmsListElement, this._films.slice(0, showingFilmsCount));
+    const newFilms = renderFilms(filmsListElement, this._films.slice(0, this._showingFilmCount));
     this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
 
     if (this._list.showMoreButton) {
@@ -52,7 +51,6 @@ export default class FilmsListController {
 
       const dataForNewRender = this._films.slice(prevFilmsCount, this._showingFilmCount);
       const filmsListElement = this._container.getElement().querySelector(`.films-list__container`);
-
       const newFilms = renderFilms(filmsListElement, dataForNewRender);
 
       this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
