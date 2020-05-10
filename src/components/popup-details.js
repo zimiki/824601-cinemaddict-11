@@ -81,13 +81,13 @@ export default class Popup extends AbstractComponent {
   getTemplate() {
     return createPopupTemplate(this._film);
   }
+
   setPopupCloseHandler(handler) {
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, handler);
+    this._popupCloseHandler = handler;
   }
 
   setOnEcsButtonHandler(handler) {
-    console.log(`установлен обработчик`);
     document.addEventListener(`keydown`, handler);
   }
-
 }

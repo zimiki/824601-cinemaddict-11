@@ -5,10 +5,10 @@ import MovieController from "./movie.js";
 const SHOWING_FILMS_COUNT_ON_START = 5;
 const SHOWING_FILMS_COUNT_BY_BUTTON = 5;
 
-const renderFilms = (filmsListElement, films) =>{
+const renderFilms = (filmsListElement, films, onDataChange, onViewChange) =>{
   return films.map((film)=>{
-    const movieController = new MovieController(filmsListElement);
-    movieController.render(film);
+    const movieController = new MovieController(filmsListElement, film, onDataChange, onViewChange);
+    movieController.render();
     return movieController;
   });
 };
@@ -21,6 +21,8 @@ export default class FilmsListController {
     this._showingFilmCount = SHOWING_FILMS_COUNT_ON_START;
     this._list = list;
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
+    this._onDataChange = this._onDataChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
   }
 
   render(data) {
@@ -30,7 +32,7 @@ export default class FilmsListController {
     const filmsListElement = this._container.getElement().querySelector(`.films-list__container`);
     filmsListElement.innerHTML = ``;
 
-    const newFilms = renderFilms(filmsListElement, this._films.slice(0, this._showingFilmCount));
+    const newFilms = renderFilms(filmsListElement, this._films.slice(0, this._showingFilmCount), this._onDataChange, this._onViewChange);
     this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
 
     if (this._list.showMoreButton) {
@@ -51,7 +53,7 @@ export default class FilmsListController {
 
       const dataForNewRender = this._films.slice(prevFilmsCount, this._showingFilmCount);
       const filmsListElement = this._container.getElement().querySelector(`.films-list__container`);
-      const newFilms = renderFilms(filmsListElement, dataForNewRender);
+      const newFilms = renderFilms(filmsListElement, dataForNewRender, this._onDataChange, this._onViewChange);
 
       this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
 
@@ -59,8 +61,30 @@ export default class FilmsListController {
         remove(this._showMoreButtonComponent);
       }
     });
+  }
+  // попрактиковаться убрать контроллер
+  _onDataChange(movieController, oldData, newData) {
+    const index = this._films.findIndex((it) => it === oldData);
+    if (index === -1) {
+      return;
+    }
 
-
+    this._films = [].concat(this._films.slice(0, index), newData, this._films.slice(index + 1));
+    movieController.setFilm(newData);
+    // это вообще нужно убирать если у меня смарт компонент ?
+    movieController.renderPopup();
   }
 
+  _onViewChange() {
+    this._showedFilmControllers.forEach((it) => it.setDefaultView());
+  }
 }
+
+/*
+Реализует отображение только одной формы редактирования
+Для этого мы воспользуемся флагом, которым будем помечать,
+какой компонент отрисовал в данный момент контроллер задачи.
+И когда нам нужно будет скрыть все формы редактирования,
+мы перерисуем только те компоненты, в контроллере которых
+будет Mode.EDIT === true
+*/

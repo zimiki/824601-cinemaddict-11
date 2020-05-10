@@ -1,4 +1,4 @@
-import AbstractComponent from "./abstract-component.js";
+import AbstractSmartComponent from "./abstract-smart-component.js";
 import {formatTime} from "../utils/common.js";
 
 const CONTROLS = [
@@ -25,16 +25,32 @@ const getShortText = (text, maxLength) => {
   return shortText;
 };
 
-const createControlMarkup = (control) => {
+
+const createControlMarkup = (control, film) => {
+  let isActiveControl = false;
+  switch (control.button) {
+    case `Add to watchlist`:
+      isActiveControl = film.watchlist;
+      break;
+    case `Mark as watched`:
+      isActiveControl = film.watched;
+      break;
+    case `Mark as favorite`:
+      isActiveControl = film.favorites;
+      break;
+  }
+  const activeClassContol = isActiveControl ? `film-card__controls-item--active` : ``;
   const {button, buttonClass} = control;
   return (
-    `<button class="film-card__controls-item button film-card__controls-item--${buttonClass}">${button}</button>`
+    `<button class="film-card__controls-item button film-card__controls-item--${buttonClass} ${activeClassContol}">${button}</button>`
   );
 };
 
 const createFilmTemplate = (film) => {
   const {name, picture, rating, release, duration, genres, description, comments} = film;
-  const controlsMarkup = CONTROLS.map(createControlMarkup).join(`\n`);
+  const controlsMarkup = CONTROLS.map((control)=>{
+    return createControlMarkup(control, film);
+  }).join(`\n`);
   const filmDecription = getShortText(description, maxDescriptionSymbol);
   const filmYear = release.getFullYear();
   const filmRating = rating.toFixed(1);
@@ -60,15 +76,45 @@ const createFilmTemplate = (film) => {
   );
 };
 
-export default class Film extends AbstractComponent {
+export default class Film extends AbstractSmartComponent {
   constructor(film) {
     super();
     this._film = film;
+    this._filmCardHandler = null;
   }
   getTemplate() {
     return createFilmTemplate(this._film);
   }
+
+
   setFilmCardHandler(handler) {
     this.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, handler);
+    this._filmCardHandler = handler;
   }
+
+  subscribeOnEvents() {
+    const element = this.getElement();
+    element.querySelector(`.film-card__controls-item--add-to-watchlist`)
+      .addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        this._film.watchlist = !this._film.watchlist;
+        this.rerender();
+      });
+    element.querySelector(`.film-card__controls-item--mark-as-watched`)
+      .addEventListener(`click`, () => {
+        this._film.watched = !this._film.watched;
+        this.rerender();
+      });
+    element.querySelector(`.film-card__controls-item--favorite`)
+    .addEventListener(`click`, () => {
+      this._film.favorites = !this._film.favorites;
+      this.rerender();
+    });
+  }
+
+  recoveryListeners() {
+    this.setFilmCardHandler(this._filmCardHandler);
+    this.subscribeOnEvents();
+  }
+
 }

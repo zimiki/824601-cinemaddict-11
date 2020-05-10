@@ -121,6 +121,10 @@ const generateFilm = () => {
     watchlist: Math.random() > 0.5,
     watched: Math.random() > 0.5,
     favorites: Math.random() > 0.5,
+    userComment: {
+      emoji: ``,
+      comment: [],
+    }
   };
 };
 
