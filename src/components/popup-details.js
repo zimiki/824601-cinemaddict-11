@@ -1,5 +1,5 @@
 import AbstractComponent from "./abstract-component.js";
-import {formatTime, formatDate} from "../utils/common.js";
+import {formatTime, formatDateRelease} from "../utils/common.js";
 
 const createDetailMarkup = (detail) => {
   const [title, value] = detail;
@@ -20,7 +20,7 @@ const createPopupTemplate = (film) => {
     [`Director`, director],
     [`Writers`, writers],
     [`Actors`, actors],
-    [`Release Date`, formatDate(release)],
+    [`Release Date`, formatDateRelease(release)],
     [`Runtime`, formatTime(duration)],
     [`Country`, country],
   ];
