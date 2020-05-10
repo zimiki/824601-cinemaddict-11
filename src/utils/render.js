@@ -26,4 +26,11 @@ const remove = (component) => {
   component.removeElement();
 };
 
-export {RenderPosition, render, createElement, remove};
+const replace = (oldComponet, newComponet) =>{
+  const oldElement = oldComponet.getElement();
+  const newElement = newComponet.getElement();
+  const parent = oldElement.parentElement;
+  parent.replaceChild(newElement, oldElement);
+};
+
+export {RenderPosition, render, createElement, remove, replace};

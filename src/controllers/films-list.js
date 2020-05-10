@@ -7,8 +7,8 @@ const SHOWING_FILMS_COUNT_BY_BUTTON = 5;
 
 const renderFilms = (filmsListElement, films, onDataChange, onViewChange) =>{
   return films.map((film)=>{
-    const movieController = new MovieController(filmsListElement, film, onDataChange, onViewChange);
-    movieController.render();
+    const movieController = new MovieController(filmsListElement, onDataChange, onViewChange);
+    movieController.render(film);
     return movieController;
   });
 };
@@ -62,17 +62,15 @@ export default class FilmsListController {
       }
     });
   }
-  // попрактиковаться убрать контроллер
-  _onDataChange(movieController, oldData, newData) {
+
+  _onDataChange(oldData, newData) {
     const index = this._films.findIndex((it) => it === oldData);
+    const contollerIndex = this._showedFilmControllers.findIndex((contoller)=> contoller._film === oldData);
     if (index === -1) {
       return;
     }
-
     this._films = [].concat(this._films.slice(0, index), newData, this._films.slice(index + 1));
-    movieController.setFilm(newData);
-    // это вообще нужно убирать если у меня смарт компонент ?
-    movieController.renderPopup();
+    this._showedFilmControllers[contollerIndex].render(this._films[index]);
   }
 
   _onViewChange() {

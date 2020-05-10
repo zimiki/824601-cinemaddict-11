@@ -21,31 +21,32 @@ const createCommentMarkup = (comments) => {
   );
 };
 
-const createEmojeMarkup = (emoji, film) => {
-  let isChecked = false;
-  if (emoji === film.userComment.emoji) {
-    isChecked = true;
-  }
-  const checkEmojiRadioButton = isChecked ? `checked` : ``;
+const createEmojeMarkup = (emoji, isChecked) => {
+  const checked = isChecked ? `checked` : ``;
 
   return (
-    `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${checkEmojiRadioButton}>
+    `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${checked}>
         <label class="film-details__emoji-label" for="emoji-${emoji}">
           <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji-${emoji}">
         </label>`
   );
 };
 
-const cteateCommentTemplate = (film) => {
+const cteateCommentTemplate = (film, userEmoji = ``) => {
+  const selectedEmoji = userEmoji;
   const filmComments = film.comments;
   const commentsMarkup = filmComments.map(createCommentMarkup).join(`\n`);
+
   const emojesMarkup = EMOJIIS.map((emoji)=>{
-    return createEmojeMarkup(emoji, film);
+    let isChecked = false;
+    if (emoji === selectedEmoji) {
+      isChecked = true;
+    }
+    return createEmojeMarkup(emoji, isChecked);
   }).join(`\n`);
   const count = film.comments.length;
 
-  const userCommentEmoji = film.userComment.emoji;
-  const showingUserCommentEmoji = userCommentEmoji ? `<img src="./images/emoji/${userCommentEmoji}.png" width="55" height="55" alt="emoji-${userCommentEmoji}">` : ``;
+  const UserEmojiImage = selectedEmoji ? `<img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji-${selectedEmoji}"></img>` : ``;
 
   return (
     `<section class="film-details__comments-wrap">
@@ -54,9 +55,9 @@ const cteateCommentTemplate = (film) => {
       ${commentsMarkup}
       </ul>
       <div class="film-details__new-comment">
-
-        <div for="add-emoji" class="film-details__add-emoji-label">${showingUserCommentEmoji}</div>
-
+        <div for="add-emoji" class="film-details__add-emoji-label">
+          ${UserEmojiImage}
+        </div>
         <label class="film-details__comment-label">
           <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
         </label>
@@ -72,22 +73,20 @@ export default class Comments extends AbstractSmartComponent {
   constructor(film) {
     super();
     this._film = film;
+    this._selectedEmoji = ``;
     this._emojiClickHandler = null;
   }
   getTemplate() {
-    return cteateCommentTemplate(this._film);
+    return cteateCommentTemplate(this._film, this._selectedEmoji);
+  }
+
+  setNewEmoji(emoji) {
+    this._selectedEmoji = emoji;
   }
 
   setEmojiClickHandler(handler) {
-    this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`click`, (evt) => {
-      if (evt.target.tagName !== `INPUT`) {
-        return;
-      }
-      const userCommentEmoji = evt.target.value;
-      handler(userCommentEmoji);
-      // Незнаю что тут делать  this._emojiClickHandler
-      // this.rerender();
-    });
+    this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`click`, handler);
+    this._emojiClickHandler = handler;
   }
 
   recoveryListeners() {

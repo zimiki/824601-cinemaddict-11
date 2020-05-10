@@ -1,4 +1,4 @@
-import AbstractSmartComponent from "./abstract-smart-component.js";
+import AbstractComponent from "./abstract-component.js";
 import {formatTime} from "../utils/common.js";
 
 const CONTROLS = [
@@ -76,7 +76,7 @@ const createFilmTemplate = (film) => {
   );
 };
 
-export default class Film extends AbstractSmartComponent {
+export default class Film extends AbstractComponent {
   constructor(film) {
     super();
     this._film = film;
@@ -86,35 +86,23 @@ export default class Film extends AbstractSmartComponent {
     return createFilmTemplate(this._film);
   }
 
-
   setFilmCardHandler(handler) {
     this.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, handler);
     this._filmCardHandler = handler;
   }
 
-  subscribeOnEvents() {
-    const element = this.getElement();
-    element.querySelector(`.film-card__controls-item--add-to-watchlist`)
-      .addEventListener(`click`, (evt) => {
-        evt.preventDefault();
-        this._film.watchlist = !this._film.watchlist;
-        this.rerender();
-      });
-    element.querySelector(`.film-card__controls-item--mark-as-watched`)
-      .addEventListener(`click`, () => {
-        this._film.watched = !this._film.watched;
-        this.rerender();
-      });
-    element.querySelector(`.film-card__controls-item--favorite`)
-    .addEventListener(`click`, () => {
-      this._film.favorites = !this._film.favorites;
-      this.rerender();
-    });
+  setWatchlistClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`)
+   .addEventListener(`click`, handler);
   }
 
-  recoveryListeners() {
-    this.setFilmCardHandler(this._filmCardHandler);
-    this.subscribeOnEvents();
+  setWatchedClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`)
+   .addEventListener(`click`, handler);
   }
 
+  setFavoriteClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__controls-item--favorite`)
+   .addEventListener(`click`, handler);
+  }
 }

@@ -2,13 +2,8 @@ import CommentsComponent from "../components/popup-comments.js";
 import FilmComponent from "../components/film.js";
 import PopupControlsComponent from "../components/popup-controls.js";
 import PopupComponent from "../components/popup-details.js";
-import {render, RenderPosition, remove} from "../utils/render.js";
+import {render, RenderPosition, remove, replace} from "../utils/render.js";
 
-const setDefaultUserComment = (film)=>{
-  film.userComment.emoji = ``;
-  film.userComment.comment = [];
-  return film;
-};
 const indexBody = document.querySelector(`body`);
 
 
@@ -21,56 +16,77 @@ const indexBody = document.querySelector(`body`);
 будет Mode.EDIT === true
 */
 
-const ModePopup = {
-  DEFAULT: `default`,
-  EDIT: `edit`,
-};
-
-
 export default class MovieController {
-  constructor(container, film, onDataChange, onViewChange) {
-    this.film = film;
+  constructor(container, onDataChange, onViewChange) {
     this._container = container;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
-    this._filmComponent = new FilmComponent(film);
-    this._onEscKeyDown = this._onEscKeyDown.bind(this);
+
+    this._film = {};
+    this._filmComponent = null;
     this._popupComponent = null;
-    this._modePopup = ModePopup.DEFAULT;
+
+    this._onEscKeyDown = this._onEscKeyDown.bind(this);
+
+    this._selectedEmoji = ``;
   }
 
   setFilm(film) {
-    this.film = film;
+    this._film = film;
   }
 
   _closePopup() {
     indexBody.classList.remove(`hide-overflow`);
     remove(this._popupComponent);
-    setDefaultUserComment(this.film);
   }
 
   // ТАКОЕ ЗАДАНИЕ Добавьте метод setDefaultView в MovieController для скрытия попапа с подробной информацией о фильме.
   setDefaultView() {
-    if (this._modePopup !== ModePopup.EDIT) {
+    if (this._popupComponent) {
       this._closePopup();
     }
   }
 
-  render() {
+  render(film) {
+    this._film = film;
+    const oldFilmComponent = this._filmComponent;
+    this._filmComponent = new FilmComponent(this._film);
+    // Сделано по аналогии со смарт компонентом, а как можно было удалить старый элемент ?
+    if (oldFilmComponent) {
+      replace(oldFilmComponent, this._filmComponent);
+    } else {
+      render(this._container, this._filmComponent, RenderPosition.BEFOREEND);
+    }
+
     this._filmComponent.setFilmCardHandler(()=>{
-      this.renderPopup();
+      this._renderPopup();
     });
-    this._filmComponent.subscribeOnEvents();
-    render(this._container, this._filmComponent, RenderPosition.BEFOREEND);
+
+    this._filmComponent.setWatchlistClickHandler((evt)=>{
+      evt.preventDefault();
+      const newFilm = Object.assign({}, this._film, {watchlist: !this._film.watchlist});
+      this._onDataChange(this._film, newFilm);
+    });
+
+    this._filmComponent.setWatchedClickHandler((evt)=>{
+      evt.preventDefault();
+      const newFilm = Object.assign({}, this._film, {watched: !this._film.watched});
+      this._onDataChange(this._film, newFilm);
+    });
+
+    this._filmComponent.setFavoriteClickHandler((evt)=>{
+      evt.preventDefault();
+      const newFilm = Object.assign({}, this._film, {favorites: !this._film.favorites});
+      this._onDataChange(this._film, newFilm);
+    });
+
   }
 
-  renderPopup() {
-    // this._onViewChange();
-    // я не знаю куда поставить этот флаг
-
-    this._popupComponent = new PopupComponent(this.film);
-    this._popupControlsComponent = new PopupControlsComponent(this.film);
-    this._popupCommentsComponent = new CommentsComponent(this.film);
+  _renderPopup() {
+    this._onViewChange();
+    this._popupComponent = new PopupComponent(this._film);
+    this._popupControlsComponent = new PopupControlsComponent(this._film);
+    this._popupCommentsComponent = new CommentsComponent(this._film);
     indexBody.classList.add(`hide-overflow`);
     const popupTopContainer = this._popupComponent.getElement().querySelector(`.form-details__top-container`);
     const popupBottomContainer = this._popupComponent.getElement().querySelector(`.form-details__bottom-container`);
@@ -78,18 +94,34 @@ export default class MovieController {
     render(popupBottomContainer, this._popupCommentsComponent, RenderPosition.BEFOREEND);
 
     render(indexBody, this._popupComponent, RenderPosition.BEFOREEND);
-    // this._modePopup = ModePopup.EDIT;
 
     this._popupComponent.setOnEcsButtonHandler(this._onEscKeyDown);
     this._popupComponent.setPopupCloseHandler(() => {
       this.setDefaultView();
     });
 
+    this._popupControlsComponent.setWatchlistClickHandler(()=>{
+      const newFilm = Object.assign({}, this._film, {watchlist: !this._film.watchlist});
+      this._onDataChange(this._film, newFilm);
 
-    this._popupCommentsComponent.setEmojiClickHandler((userCommentEmoji)=>{
-      const newData = Object.assign({}, this.film, {userComment: Object.assign({}, this.film.userComment)});
-      newData.userComment.emoji = userCommentEmoji;
-      this._onDataChange(this, this.film, newData);
+    });
+    this._popupControlsComponent.setWatchedClickHandler(()=>{
+      const newFilm = Object.assign({}, this._film, {watched: !this._film.watched});
+      this._onDataChange(this._film, newFilm);
+
+    });
+    this._popupControlsComponent.setFavoriteClickHandler(()=>{
+      const newFilm = Object.assign({}, this._film, {favorites: !this._film.favorites});
+      this._onDataChange(this._film, newFilm);
+    });
+
+    this._popupCommentsComponent.setEmojiClickHandler((evt)=>{
+      if (evt.target.tagName !== `INPUT`) {
+        return;
+      }
+      this._selectedEmoji = evt.target.value;
+      this._popupCommentsComponent.setNewEmoji(this._selectedEmoji);
+      this._popupCommentsComponent.rerender();
     });
   }
 
@@ -100,4 +132,5 @@ export default class MovieController {
       this.setDefaultView();
     }
   }
+
 }

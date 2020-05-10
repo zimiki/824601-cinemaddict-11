@@ -62,4 +62,19 @@ export default class PopupControls extends AbstractComponent {
   getTemplate() {
     return createPopupControlsTemplate(this._film);
   }
+
+  setWatchlistClickHandler(handler) {
+    this.getElement().querySelector(`.film-details__control-label--watchlist`)
+   .addEventListener(`click`, handler);
+  }
+
+  setWatchedClickHandler(handler) {
+    this.getElement().querySelector(`.film-details__control-label--watched`)
+   .addEventListener(`click`, handler);
+  }
+
+  setFavoriteClickHandler(handler) {
+    this.getElement().querySelector(`.film-details__control-label--favorite`)
+   .addEventListener(`click`, handler);
+  }
 }
