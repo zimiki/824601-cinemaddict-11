@@ -1,6 +1,6 @@
-import {EMOJIIS} from "../const.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
 
+const EMOJIIS = [`smile`, `sleeping`, `puke`, `angry`];
 const createCommentMarkup = (comments) => {
   const {text, autor, data, emoji} = comments;
 
@@ -74,22 +74,25 @@ export default class Comments extends AbstractSmartComponent {
     super();
     this._film = film;
     this._selectedEmoji = ``;
-    this._emojiClickHandler = null;
+    this.recoveryListeners();
+
+
   }
   getTemplate() {
     return cteateCommentTemplate(this._film, this._selectedEmoji);
   }
 
-  setNewEmoji(emoji) {
-    this._selectedEmoji = emoji;
-  }
-
-  setEmojiClickHandler(handler) {
-    this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`click`, handler);
-    this._emojiClickHandler = handler;
+  setEmojiClickHandler() {
+    this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`click`, (evt)=>{
+      if (evt.target.tagName !== `INPUT`) {
+        return;
+      }
+      this._selectedEmoji = evt.target.value;
+      this.rerender();
+    });
   }
 
   recoveryListeners() {
-    this.setEmojiClickHandler(this._emojiClickHandler);
+    this.setEmojiClickHandler();
   }
 }

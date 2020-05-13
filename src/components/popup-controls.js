@@ -4,36 +4,31 @@ const CONTROLS_POPUP = [
   {
     name: `watchlist`,
     button: `Add to watchlist`,
+    isActive(film) {
+      return film.watchlist;
+    }
   },
   {
     name: `watched`,
     button: `Already watched`,
+    isActive(film) {
+      return film.watched;
+    }
   },
   {
     name: `favorite`,
     button: `Add to favorites`,
+    isActive(film) {
+      return film.favorites;
+    }
   },
 ];
 
 const createControlMarkup = (control, film) => {
-  const {name, button} = control;
+  const {name, button, isActive} = control;
 
-  let isActive = false;
-
-  switch (name) {
-    case `watchlist`:
-      isActive = film.watchlist;
-      break;
-    case `watched`:
-      isActive = film.watched;
-      break;
-    case `favorite`:
-      isActive = film.favorites;
-      break;
-  }
-
-  const checkInput = isActive ? `checked` : ``;
-  const checkControl = isActive ? `film-details__control-input:checked` : ``;
+  const checkInput = isActive(film) ? `checked` : ``;
+  const checkControl = isActive(film) ? `film-details__control-input:checked` : ``;
 
   return (
     `<input type="checkbox" ${checkInput} class="film-details__control-input visually-hidden" id="${name}" name="${name}">

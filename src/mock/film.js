@@ -101,9 +101,12 @@ const getRandomDate = (start, end) => {
   return new Date(getRandomIntegerNumber(startDate, endDate));
 };
 
+let filmID = 1;
+
 const generateFilm = () => {
   const randomFilm = getRandomArrayItem(FILMS_DATA);
   return {
+    id: filmID++,
     name: randomFilm.name,
     original: randomFilm.original,
     picture: randomFilm.picture,

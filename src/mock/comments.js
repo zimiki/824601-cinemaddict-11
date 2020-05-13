@@ -1,5 +1,4 @@
-import {EMOJIIS} from "../const.js";
-
+const EMOJIIS = [`smile`, `sleeping`, `puke`, `angry`];
 
 // Генерация включая min, и включая max
 const getRandomIntegerNumber = (min, max) => {

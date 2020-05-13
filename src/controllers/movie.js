@@ -51,7 +51,7 @@ export default class MovieController {
     this._film = film;
     const oldFilmComponent = this._filmComponent;
     this._filmComponent = new FilmComponent(this._film);
-    // Сделано по аналогии со смарт компонентом, а как можно было удалить старый элемент ?
+
     if (oldFilmComponent) {
       replace(oldFilmComponent, this._filmComponent);
     } else {
@@ -113,15 +113,6 @@ export default class MovieController {
     this._popupControlsComponent.setFavoriteClickHandler(()=>{
       const newFilm = Object.assign({}, this._film, {favorites: !this._film.favorites});
       this._onDataChange(this._film, newFilm);
-    });
-
-    this._popupCommentsComponent.setEmojiClickHandler((evt)=>{
-      if (evt.target.tagName !== `INPUT`) {
-        return;
-      }
-      this._selectedEmoji = evt.target.value;
-      this._popupCommentsComponent.setNewEmoji(this._selectedEmoji);
-      this._popupCommentsComponent.rerender();
     });
   }
 

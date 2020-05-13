@@ -8,25 +8,28 @@ import FilmsListComponent from "../components/films-list.js";
 
 
 export default class PageController {
-  constructor(container) {
+  constructor(container, filmsModel) {
     this._container = container;
+    this._filmsModel = filmsModel;
+
     this._navigationComponent = new NavigationComponent();
     this._sortComponent = new SortComponent();
     this._listsContainerComponent = new ListsContainerComponent();
   }
 
-  render(data) {
+  render() {
     const container = this._container;
     render(container, this._navigationComponent, RenderPosition.BEFOREEND);
     render(container, this._sortComponent, RenderPosition.BEFOREEND);
     render(container, this._listsContainerComponent, RenderPosition.BEFOREEND);
 
     const controllers = INDEX_LISTS.map((list) => {
-      const renderData = list.getData(data);
+      // const renderData = list.getData(data);
       const filmListComponent = new FilmsListComponent(list);
       render(this._listsContainerComponent.getElement(), filmListComponent, RenderPosition.BEFOREEND);
-      const controller = new FilmsListController(filmListComponent, list);
-      controller.render(renderData);
+      const controller = new FilmsListController(filmListComponent, list, this._filmsModel);
+      // controller.render(renderData);
+      controller.render();
       return controller;
     });
 
